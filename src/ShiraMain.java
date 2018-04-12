@@ -4,13 +4,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ShiraMain {
 	
-	
-	
-	
-
 	public static void main(String[] args) throws IOException {
 		if (args.length < 2) {
-			System.err.println("At least one argument expected");
+			System.err.println("At least two argument expected");
 			return;
 		}
 
