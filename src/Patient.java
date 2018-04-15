@@ -129,12 +129,24 @@ public class Patient {
 		return id;
 	}
 
-	public void addTestsDataFromOtherPatient(Patient other, int recordIndextoAdd) {
-		this.numOfTransplant.add(other.getNumOfTransplant().get(recordIndextoAdd));
-		this.testResults.add(other.getTestResults().get(recordIndextoAdd));
-		this.testResultsDate.add(other.getTestResultsDate().get(recordIndextoAdd));
-		this.transplantDate.add(other.getTransplantDate().get(recordIndextoAdd));
-		this.typeOfTest.add(other.getTypeOfTest().get(recordIndextoAdd));
+	public void addTestsDataFromOtherPatient(Patient other, int recordIndextoAdd, boolean append) {
+		if(append)
+		{
+			this.numOfTransplant.add(other.getNumOfTransplant().get(recordIndextoAdd));
+			this.testResults.add(other.getTestResults().get(recordIndextoAdd));
+			this.testResultsDate.add(other.getTestResultsDate().get(recordIndextoAdd));
+			this.transplantDate.add(other.getTransplantDate().get(recordIndextoAdd));
+			this.typeOfTest.add(other.getTypeOfTest().get(recordIndextoAdd));
+		}
+		else
+		{
+			this.numOfTransplant.add(0, other.getNumOfTransplant().get(recordIndextoAdd));
+			this.testResults.add(0,other.getTestResults().get(recordIndextoAdd));
+			this.testResultsDate.add(0,other.getTestResultsDate().get(recordIndextoAdd));
+			this.transplantDate.add(0,other.getTransplantDate().get(recordIndextoAdd));
+			this.typeOfTest.add(0,other.getTypeOfTest().get(recordIndextoAdd));
+			
+		}
 	}
 
 	public double calcTWA() {
@@ -150,12 +162,7 @@ public class Patient {
 				return  Double.MIN_VALUE;
 			}
 		}
-		
-//		// Calc first pair:
-//		days += ChronoUnit.DAYS.between(testResultsDate.get(0),transplantDate.get(0).plusDays(MAGIC_NUM_OF_DAYS_SINCE_TRANSPLANT));
-//		result  += days * testResults.get(0);
-		
-		// 
+		 
 		for (int i = 0 ; i < testResultsDate.size() - 1 ; i ++)
 		{
 			double tempDays = ChronoUnit.DAYS.between(testResultsDate.get(i+1),testResultsDate.get(i));
@@ -167,9 +174,6 @@ public class Patient {
 		}
 		
 		return result/days;
-		
-		
 	}
-	
 	
 }
