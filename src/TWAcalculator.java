@@ -12,9 +12,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class TWAcalculator {
 	
 	private PatientsDB cleanDB;
+	private Logger log;
 	
-	public TWAcalculator(PatientsDB cleabDB) {
+	public TWAcalculator(PatientsDB cleabDB, Logger log) {
 		this.cleanDB = cleabDB;
+		this.log = log;
 	}
 	
 	public void calcTWA(XSSFWorkbook outputWorkbook)
@@ -42,6 +44,10 @@ public class TWAcalculator {
 				XSSFRow row = sheet1.createRow(outputFileRow);
 				row.createCell(0).setCellValue(patient.getId());
 				row.createCell(1).setCellValue(patientTWA);
+			}
+			if (patient.getId() == log.getPatientID())
+			{
+				log.logData("Final TWA: ", "" + patientTWA );
 			}
 		}
 	}

@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JOptionPane;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -21,11 +23,13 @@ public class PatientsDataParser {
 	
 	private HSSFWorkbook InputWorkBook;
 	private PatientsDB patientRawDB;
+	private Logger log;
 
-	public PatientsDataParser(HSSFWorkbook excelFile, PatientsDB db) {
+	public PatientsDataParser(HSSFWorkbook excelFile, PatientsDB db, Logger log) {
 		super();
 		this.InputWorkBook = excelFile;
 		this.patientRawDB = db;
+		this.log = log;
 	}
 	
 	public void parseExcel()
@@ -64,8 +68,12 @@ public class PatientsDataParser {
 				}
 
 				// Update patient's data:
-				 parseRowToPatient(currentRow, patient);			
-			}	
+				 parseRowToPatient(currentRow, patient);
+			}
+			
+			// After reading all rows in the file = prompt for required patient and start logging:
+			int IDToLog = Integer.parseInt(JOptionPane.showInputDialog("Pls insert required patient ID"));
+			log.logData("Raw data: ", patientRawDB.getPatients().get(IDToLog).toString());
 		}
 	}
 	
@@ -146,12 +154,4 @@ public class PatientsDataParser {
 		}
 		patient.addNumberOfTransplant(numberOfTransplant);
 	}
-
-	
-	
-	
-	
-	
-	
-
 }
