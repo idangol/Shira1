@@ -7,11 +7,13 @@ public class DBFixer {
 
 	private PatientsDB rawDB;
 	private PatientsDB cleanDB;
+	private Logger log;
 
-	public DBFixer(PatientsDB rawDB) {
+	public DBFixer(PatientsDB rawDB, Logger log) {
 		super();
 		this.rawDB = rawDB;
 		this.cleanDB = new PatientsDB();
+		this.log = log;
 	}
 
 	public PatientsDB getCleanDB() {
@@ -82,21 +84,26 @@ public class DBFixer {
 			{
 				// Alternate first and last data for the patient:
 				int cleanDataSize = cleanPatient.getTestResults().size();
-				try {
-				replacePatientDataEdges(requiredNumOfDaysfromTransplant, cleanPatient, 0, 1, 0);
-				}
-				catch(Exception e)
-				{
-					System.out.println("problem with patient : \n"  +cleanPatient.toString());
-				}
-				replacePatientDataEdges(requiredNumOfDaysToTheEndOfResearch, cleanPatient,
-										cleanDataSize - 2, cleanDataSize - 1, cleanDataSize - 1 );		
+				
+				double[] A0_B0 = replacePatientDataEdges(requiredNumOfDaysfromTransplant, cleanPatient, 0, 1, 0);
+				
+				double[] An_Bn = 
+					 replacePatientDataEdges(requiredNumOfDaysToTheEndOfResearch, cleanPatient,
+										cleanDataSize - 2, cleanDataSize - 1, cleanDataSize - 1);
+					
 				cleanDB.addPateint(cleanPatient);
+				if (cleanPatient.getId() == log.getPatientID())
+				{
+					log.logData("After scaning, tests dates list: ",cleanPatient.getTestResultsDate().toString());
+					log.logData("After scanning:, tests values lists: ", cleanPatient.getTestResults().toString());
+					log.logData("Linear equation factors, beginning: ","Y = " + A0_B0[0] + "X" + A0_B0[1]);
+					log.logData("Linear equation factors, end: ", "Y = " + An_Bn[0] + "X" + An_Bn[1]);
+				}
 			}
 		}
 	}
 
-	private void replacePatientDataEdges(int requiredNumOfDaysfromTransplant, Patient cleanPatient,
+	private double[] replacePatientDataEdges(int requiredNumOfDaysfromTransplant, Patient cleanPatient,
 										 int firstIndex, int lastIndex, int patientTestIndexToReplace) 
 	{
 		double y1 = cleanPatient.getTestResults().get(firstIndex);
@@ -107,12 +114,17 @@ public class DBFixer {
 												  cleanPatient.getTestResultsDate().get(lastIndex));
 		int requiredTimedValue = requiredNumOfDaysfromTransplant;
 		
-		double newTestValue = getCalcultedTestResult(y2, y1, x2, x1, requiredTimedValue);
+		LinearEquation le = 
+				getCalcultedTestResult(y2, y1, x2, x1, requiredTimedValue);
 		LocalDate newDateValue = cleanPatient.getTransplantDate().get(0).plusDays(requiredNumOfDaysfromTransplant);
 		cleanPatient.getTestResults().remove(patientTestIndexToReplace);
-		cleanPatient.getTestResults().add(patientTestIndexToReplace, newTestValue);
+		cleanPatient.getTestResults().add(patientTestIndexToReplace, le.Y);
 		cleanPatient.getTestResultsDate().remove(patientTestIndexToReplace);
 		cleanPatient.getTestResultsDate().add(patientTestIndexToReplace, newDateValue);
+		double[] a_b = {le.a,le.b};
+		return a_b;
+		
+		
 	}
 	
 	private double getLinearSlop(double y2, double y1, double x2, double x1)
@@ -136,10 +148,25 @@ public class DBFixer {
 		return slope_a * x + freeElement_b;
 	}
 	
-	private double getCalcultedTestResult (double y2, double y1, double x2, double x1, int requiredTimeValue)
+	private LinearEquation getCalcultedTestResult (double y2, double y1, double x2, double x1, int requiredTimeValue)
 	{
+		
 		double a = getLinearSlop(y2, y1, x2, x1);
 		double b = getLinearFreeElement(x1, y1, a);
-		return calculateYvalueLinearEquasion(a, b, (double) requiredTimeValue);
+		double Y = calculateYvalueLinearEquasion(a, b, (double) requiredTimeValue);
+		return new LinearEquation(a, b, Y);
+	}
+	
+	public class LinearEquation{
+		private double a;
+		private double b;
+		private double Y;
+		
+		public LinearEquation(double a, double b, double Y)
+		{
+			this.a = a;
+			this.b = b;
+			this.Y = Y;
+		}
 	}
 }
