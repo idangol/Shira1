@@ -73,15 +73,11 @@ public class PatientsDataParser {
 			
 			// After reading all rows in the file = prompt for required patient and start logging:
 			int IDToLog = Integer.parseInt(JOptionPane.showInputDialog("Pls insert required patient ID"));
-			log.logData("Raw data: ", patientRawDB.getPatients().get(IDToLog).toString());
+			log.setPatientID(IDToLog);
+			log.logData("\nRaw data: ", patientRawDB.getPatients().get(IDToLog).toString());
 		}
 	}
 	
-	private void addDataToExistingPatient(HSSFRow currentRow, int currentID) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	static private Patient parseRowToPatient(HSSFRow row, Patient patient)
 	{
 		

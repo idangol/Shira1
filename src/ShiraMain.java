@@ -35,6 +35,8 @@ public class ShiraMain {
 		twAcalculator.calcTWA(resultWorkbook);
 		twAcalculator.writeToFile(resultWorkbook, outputFileName);
 		
+		log.flush_n_close();
+		
 		
 	}	
 		
