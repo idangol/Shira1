@@ -92,12 +92,13 @@ public class DBFixer {
 										cleanDataSize - 2, cleanDataSize - 1, cleanDataSize - 1);
 					
 				cleanDB.addPateint(cleanPatient);
+				
 				if (cleanPatient.getId() == log.getPatientID())
 				{
-					log.logData("After scaning, tests dates list: ",cleanPatient.getTestResultsDate().toString());
-					log.logData("After scanning:, tests values lists: ", cleanPatient.getTestResults().toString());
-					log.logData("Linear equation factors, beginning: ","Y = " + A0_B0[0] + "X" + A0_B0[1]);
-					log.logData("Linear equation factors, end: ", "Y = " + An_Bn[0] + "X" + An_Bn[1]);
+					log.logData("\nAfter scaning, tests dates list:\n\t",cleanPatient.getTestResultsDate().toString());
+					log.logData("\nAfter scanning:, tests values lists:\n\t", cleanPatient.getTestResults().toString());
+					log.logData("\nLinear equation factors, beginning of period:\n\t","Y = " + A0_B0[0] + "*X + " + A0_B0[1]);
+					log.logData("\nLinear equation factors, end of period:\n\t", "Y = " + An_Bn[0] + "*X + " + An_Bn[1]);
 				}
 			}
 		}

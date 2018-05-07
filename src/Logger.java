@@ -40,10 +40,17 @@ public class Logger {
 	public void logData(String header, String data)
 	{
 		try {
-			bw.append("\t" + LocalDate.now() + ": " + header + "\n-------------------------------------" + "\n\t" + data);
+			bw.append("\n\t" + header +  data);
 		} catch (IOException e) {
 			System.out.println("Failed to write data: " + data);
 		}
+	}
+
+
+
+	public void flush_n_close() throws IOException {
+		if (bw != null)
+			{bw.close();}
 	}
 	
 }
