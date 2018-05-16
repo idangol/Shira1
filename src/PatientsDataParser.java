@@ -38,16 +38,13 @@ public class PatientsDataParser {
 		{
 			HSSFSheet sheet1 = InputWorkBook.getSheetAt(sheet);
 			int rowsInFile = sheet1.getPhysicalNumberOfRows();
-			/*System.out.println("Sheet " + sheet + " \"" + InputWorkBook.getSheetName(sheet) + "\" has " + rows
-					+ " row(s).");*/
 			
 			for (int row = 1 ; row < rowsInFile ; row++)
 			{	
 				HSSFRow currentRow = sheet1.getRow(row);
 				
-				// check for a new patient:
 				HSSFCell cell = currentRow.getCell(ID_INDEX);
-				int currentID =Integer.parseInt(cell.getStringCellValue());
+				int currentID = Integer.parseInt(cell.getStringCellValue());
 				
 				// check for a new Patient: 
 				// if the raw pateints DB doesn't contains the patients ID
@@ -76,6 +73,9 @@ public class PatientsDataParser {
 			log.setPatientID(IDToLog);
 			log.logData("\nRaw data: ", patientRawDB.getPatients().get(IDToLog).toString());
 		}
+		
+		// Get the latest test result for all patients:
+		
 	}
 	
 	static private Patient parseRowToPatient(HSSFRow row, Patient patient)

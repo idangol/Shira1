@@ -11,11 +11,22 @@ public class Patient {
 	private int id;
 	private LocalDate firstTestDateAfterTheTransplant;
 	private double firstTestValueAfterTheTransplant;
+	
+	// The containers for the patient's raw data:
 	private ArrayList<LocalDate> transplantDate;
 	private ArrayList<LocalDate> testResultsDate;
 	private ArrayList<Integer> numOfTransplant;
 	private ArrayList<String> typeOfTest;
 	private ArrayList<Double> testResults;
+	
+	// The matrix for the patients intervals of data:
+	private ArrayList<ArrayList<LocalDate>> transplantDateMatrix;
+	private ArrayList<ArrayList<LocalDate>> testResultsDateMatrix;
+	private ArrayList<ArrayList<Integer>> numOfTransplantMatrix;
+	private ArrayList<ArrayList<String>> typeOfTestMatrix;
+	private ArrayList<ArrayList<Double>> testResultsMatrix;
+	
+	
 	
 	// Constructor:
 	//---------------------------------------------------------
@@ -31,6 +42,12 @@ public class Patient {
 		this.numOfTransplant = new  ArrayList<Integer>();
 		this.typeOfTest = new ArrayList<String>();
 		this.testResults = new ArrayList<Double>();
+		
+		this.transplantDateMatrix = new ArrayList<ArrayList<LocalDate>>();
+		this.testResultsDateMatrix = new ArrayList<ArrayList<LocalDate>>();
+		this.numOfTransplantMatrix = new ArrayList<ArrayList<Integer>>();
+		this.typeOfTestMatrix = new ArrayList<ArrayList<String>>();
+		this.testResultsMatrix = new ArrayList<ArrayList<Double>>();
 	}
 	
 	// Getters:
@@ -72,8 +89,50 @@ public class Patient {
 		return firstTestValueAfterTheTransplant;
 	}
 	
+	public ArrayList<ArrayList<Double>> getTestResultsMatrix() {
+		return testResultsMatrix;
+	}
+	
+	public ArrayList<ArrayList<LocalDate>> getTestResultsDateMatrix() {
+		return testResultsDateMatrix;
+	}
+	
+	public ArrayList<ArrayList<String>> getTypeOfTestMatrix() {
+		return typeOfTestMatrix;
+	}
+	
+	public ArrayList<ArrayList<LocalDate>> getTransplantDateMatrix() {
+		return transplantDateMatrix;
+	}
+	
+	
+	
 	// Setters:
 	//---------------------------------------------------------
+
+	public void setTransplantDateMatrix(ArrayList<ArrayList<LocalDate>> transplantDateMatrix) {
+		this.transplantDateMatrix = transplantDateMatrix;
+	}
+
+	public void setTestResultsDateMatrix(ArrayList<ArrayList<LocalDate>> testResultsDateMatrix) {
+		this.testResultsDateMatrix = testResultsDateMatrix;
+	}
+
+	public ArrayList<ArrayList<Integer>> getNumOfTransplantMatrix() {
+		return numOfTransplantMatrix;
+	}
+
+	public void setNumOfTransplantMatrix(ArrayList<ArrayList<Integer>> numOfTransplantMatrix) {
+		this.numOfTransplantMatrix = numOfTransplantMatrix;
+	}
+
+	public void setTypeOfTestMatrix(ArrayList<ArrayList<String>> typeOfTestMatrix) {
+		this.typeOfTestMatrix = typeOfTestMatrix;
+	}
+
+	public void setTestResultsMatrix(ArrayList<ArrayList<Double>> testResultsMatrix) {
+		this.testResultsMatrix = testResultsMatrix;
+	}
 
 	public void setFirstTestDateAfterTheTransplant(LocalDate firstTestDateAfterTheTransplant) {
 		this.firstTestDateAfterTheTransplant = firstTestDateAfterTheTransplant;

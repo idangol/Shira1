@@ -1,8 +1,5 @@
 import java.io.IOException;
 
-import javax.naming.PartialResultException;
-import javax.swing.JOptionPane;
-
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -17,6 +14,10 @@ public class ShiraMain {
 		String inputfileName = args[0];
 		String outputFileName = args[1];
 		String loggerFileName = args[2];
+		int deltaDaysForTWAs =Integer.parseInt(args[3]);
+		int daysFromTransplant =Integer.parseInt(args[4]);
+		
+		
 
 			
 		HSSFWorkbook InputWorkBook = HSSFReadWrite.readFile(inputfileName);
@@ -26,12 +27,19 @@ public class ShiraMain {
 		PatientsDataParser parser = new PatientsDataParser(InputWorkBook, db, log);
 		parser.parseExcel();
 		
-		DBFixer dbFixer = new DBFixer(db, log);
-		dbFixer.fixDB();
 		
+		// TODO: dbFixer should be created for each section of deltaDaysForTWAs within the available period
+		DBFixer dbFixer = new DBFixer(db, log);
+		dbFixer.fixDB(daysFromTransplant, deltaDaysForTWAs);
 		TWAcalculator twAcalculator = new TWAcalculator(dbFixer.getCleanDB(), log);
 		
+		
+		
 		XSSFWorkbook resultWorkbook = new XSSFWorkbook();
+		
+		
+		// TODO: calcTWA should recieve the iteration number and store the calculted TWA in the correct column with 
+		//       the proper header
 		twAcalculator.calcTWA(resultWorkbook);
 		twAcalculator.writeToFile(resultWorkbook, outputFileName);
 		

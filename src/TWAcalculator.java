@@ -27,8 +27,12 @@ public class TWAcalculator {
 		XSSFCell cell1 = header.createCell(0);
 		cell1.setCellValue("Patient ID");
 		XSSFCell cell2 = header.createCell(1);
+		
+		
+		// TODO: update column header s.t. times will be shown per patient
 		cell2.setCellValue("TWA");
 		
+		// TODO: sort patient by ID before it before iterating
 		for (Patient patient : cleanDB.getPatients().values())
 		{
 			
@@ -37,7 +41,7 @@ public class TWAcalculator {
 			{
 				System.out.println("\nPatient ID: " + patient.getId() + " problem with TWA calculation");
 			}
-			//System.out.println("\nPatient ID: " + patient.getId() + "\n\t TWA: " + patientTWA );
+			
 			else
 			{
 				outputFileRow++;		

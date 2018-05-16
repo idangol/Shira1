@@ -8,6 +8,7 @@ public class DBFixer {
 	private PatientsDB rawDB;
 	private PatientsDB cleanDB;
 	private Logger log;
+	
 
 	public DBFixer(PatientsDB rawDB, Logger log) {
 		super();
@@ -20,25 +21,27 @@ public class DBFixer {
 		return cleanDB;
 	}
 
-	public void fixDB() {
+	public void fixDB(int requiredNumOfDaysfromTransplant, int requiredNumOfDaysToTheEndOfResearch ) {
 
 		// Set the beginning of test data limit:
-		int requiredNumOfDaysfromTransplant = 
-				Integer.parseInt(JOptionPane.showInputDialog("How namy days from transplant?"));
-
-		int requiredNumOfDaysToTheEndOfResearch =
-				Integer.parseInt(JOptionPane.showInputDialog("How namy days from transplant to the end of the research?"));
+//		int requiredNumOfDaysfromTransplant = 
+//				Integer.parseInt(JOptionPane.showInputDialog("How namy days from transplant?"));
+//
+//		int requiredNumOfDaysToTheEndOfResearch =
+//				Integer.parseInt(JOptionPane.showInputDialog("How namy days from transplant to the end of the research?"));
 
 		// Scan and fix the DB:
+		// for each interval - from transplant + <requiredNumOfDaysfromTransplant> for 1st interval OR last interval last date,
+		//                     until <requiredNumOfDaysfromTransplant>, if there is data - create a record in the patients data matrix:
 		//	1. If the test data is N/A: discard the test
 		//	2. Set the 1st test data the nearest test after the transplant
 		for (Patient patient : rawDB.getPatients().values())
 		{
 			// Create a new patient, only clean test should be recorded:
+			// This time the whole data should be divided into intervals, resulting in  a matrix data for each patient:
 			Patient cleanPatient = new Patient(patient.getFirstName(),patient.getLastName() ,patient.getId());
 
 			// Set the transplant date and the 1st test after the transplant date:
-
 			cleanPatient.setFirstTestDateAfterTheTransplant(patient.getFirstTestDateAfterTheTransplant());
 			cleanPatient.setFirstTestValueAfterTheTransplant(patient.getFirstTestValueAfterTheTransplant());
 
@@ -48,7 +51,6 @@ public class DBFixer {
 			// Start from the 2nd spot. save room for the last test that is under <requiredNumOfDaysfromTransplant>
 			for (int i = 1 ; i < dataSize; i++)
 			{
-
 				int daysBetweenTransplantAndTest = (int) ChronoUnit.DAYS.between(
 						patient.getTransplantDate().get(i), patient.getTestResultsDate().get(i));
 
@@ -133,11 +135,6 @@ public class DBFixer {
 		return (y2-y1)/(x2-x1);
 	}
 	
-	
-	// Y-y1 = slope(X-x1)
-	// Y = slope(X-x1)+y1
-	// Y = slope(X) + y1-slope*x1
-	// ==> b = y1-slope*x1
 	private double getLinearFreeElement (double x1, double y1, double slope)
 	{
 		return y1-slope*x1; 
