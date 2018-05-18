@@ -256,6 +256,16 @@ public class Patient {
 			return false;
 		return true;
 	}
+
+	public void updateInerval(ArrayList<LocalDate> tempTransDateMat, ArrayList<LocalDate> tempTestResDateMat,
+			ArrayList<Integer> tempNumOfTransMat, ArrayList<Double> tempTestResMat, ArrayList<String> tempTypeOfTestMat,
+			int interval) {
+		this.transplantDateMatrix.add(interval,tempTransDateMat);
+		this.testResultsDateMatrix.add(interval,tempTestResDateMat);
+		this.numOfTransplantMatrix.add(interval,tempNumOfTransMat);
+		this.testResultsMatrix.add(interval,tempTestResMat);
+		this.typeOfTestMatrix.add(interval,tempTypeOfTestMat);
+	}
 	
 	
 	
