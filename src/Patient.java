@@ -9,8 +9,6 @@ public class Patient {
 	private String firstName;
 	private String lastName;
 	private int id;
-	private LocalDate firstTestDateAfterTheTransplant;
-	private double firstTestValueAfterTheTransplant;
 	
 	// The containers for the patient's raw data:
 	private ArrayList<LocalDate> transplantDate;
@@ -35,8 +33,8 @@ public class Patient {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.id = id;
-		this.firstTestDateAfterTheTransplant = null;
-		this.firstTestValueAfterTheTransplant = 0.0;
+		//this.firstTestDateAfterTheTransplant = null;
+		//this.firstTestValueAfterTheTransplant = 0.0;
 		this.transplantDate = new ArrayList<LocalDate>();
 		this.testResultsDate = new ArrayList<LocalDate>();
 		this.numOfTransplant = new  ArrayList<Integer>();
@@ -79,14 +77,6 @@ public class Patient {
 
 	public String getLastName() {
 		return lastName;
-	}
-	
-	public LocalDate getFirstTestDateAfterTheTransplant() {
-		return firstTestDateAfterTheTransplant;
-	}
-
-	public double getFirstTestValueAfterTheTransplant() {
-		return firstTestValueAfterTheTransplant;
 	}
 	
 	public ArrayList<ArrayList<Double>> getTestResultsMatrix() {
@@ -132,14 +122,6 @@ public class Patient {
 
 	public void setTestResultsMatrix(ArrayList<ArrayList<Double>> testResultsMatrix) {
 		this.testResultsMatrix = testResultsMatrix;
-	}
-
-	public void setFirstTestDateAfterTheTransplant(LocalDate firstTestDateAfterTheTransplant) {
-		this.firstTestDateAfterTheTransplant = firstTestDateAfterTheTransplant;
-	}
-
-	public void setFirstTestValueAfterTheTransplant(double firstTestValueAfterTheTransplant) {
-		this.firstTestValueAfterTheTransplant = firstTestValueAfterTheTransplant;
 	}
 
 	// Update the data lists:

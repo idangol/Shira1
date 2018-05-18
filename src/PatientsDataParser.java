@@ -91,9 +91,6 @@ public class PatientsDataParser {
 		parseTypeOfTesttoPatient(row, patient);
 		
 		parsetestResultToPatient(row, patient);
-		
-		patient.setFirstTestDateAfterTheTransplant(patient.getTestResultsDate().get(0));
-		patient.setFirstTestValueAfterTheTransplant(patient.getTestResults().get(0));
 			
 		return patient;
 	}
