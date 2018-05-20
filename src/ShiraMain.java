@@ -27,19 +27,15 @@ public class ShiraMain {
 		PatientsDataParser parser = new PatientsDataParser(InputWorkBook, db, log);
 		parser.parseExcel();
 		
-		
-		// TODO: dbFixer should be created for each section of deltaDaysForTWAs within the available period
 		DBFixer dbFixer = new DBFixer(db, log);
 		dbFixer.fixDB(daysFromTransplant, deltaDaysForTWAs);
-		TWAcalculator twAcalculator = new TWAcalculator(dbFixer.getCleanDB(), log);
+		TWAcalculator twAcalculator = new TWAcalculator(db, log);
 		
 		
 		
 		XSSFWorkbook resultWorkbook = new XSSFWorkbook();
 		
-		
-		// TODO: calcTWA should recieve the iteration number and store the calculted TWA in the correct column with 
-		//       the proper header
+	
 		twAcalculator.calcTWA(resultWorkbook);
 		twAcalculator.writeToFile(resultWorkbook, outputFileName);
 		

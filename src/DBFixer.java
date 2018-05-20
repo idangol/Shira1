@@ -5,20 +5,15 @@ import java.util.ArrayList;
 public class DBFixer {
 
 	private PatientsDB rawDB;
-	private PatientsDB cleanDB;
 	private Logger log;
 
 
 	public DBFixer(PatientsDB rawDB, Logger log) {
 		super();
 		this.rawDB = rawDB;
-		this.cleanDB = new PatientsDB();
 		this.log = log;
 	}
 
-	public PatientsDB getCleanDB() {
-		return cleanDB;
-	}
 
 	public void fixDB(int requiredNumOfDaysfromTransplant, int requiredNumOfDaysToTheEndOfInterval ) {
 

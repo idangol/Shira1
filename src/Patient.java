@@ -190,19 +190,34 @@ public class Patient {
 		}
 	}
 
-	public double calcTWA() {
+	public double[] calcTWA() {
+			
+		int numOfcolumnsForThepatient =  this.getTestResultsMatrix().size();
 		
-		double result = 0.0;
-		int days = 0;
-		// 1. Alert if test dates is unsorted:
-		for(int i = 0 ; i < testResultsDate.size() - 1 ; i ++ )
+		double[] results = new double[numOfcolumnsForThepatient];
+		
+		for (int i = 0 ; i < numOfcolumnsForThepatient ; i++)
 		{
-			if (testResultsDate.get(i+1).isBefore(testResultsDate.get(i)))
+			double TWAi = calcTWAForInterval(this.getTestResultsDateMatrix().get(i), this.getTestResultsMatrix().get(i));
+			results[i] = TWAi;		
+		}
+	    return results;
+	}
+
+	private double calcTWAForInterval(ArrayList<LocalDate> testResultsDate, ArrayList<Double>testResults) {
+		
+		// 1. Alert if test dates is unsorted:	
+		double result = 0.0;
+		for(int k = 0 ; k < testResultsDate.size() - 1 ; k ++ )
+		{
+			if (testResultsDate.get(k+1).isBefore(testResultsDate.get(k)))
 			{
-				System.out.println("Problem with patient with ID: " + id + " tests dates are out of order: see " + i + " and " + (i+1));
-				return  Double.MIN_VALUE;
+				System.out.println("Problem with patient with ID: " + id + " tests dates are out of order: see " + k + " and " + (k+1));
+				return  -1.0;
 			}
 		}
+		
+		int days = 0;
 		 
 		for (int i = 0 ; i < testResultsDate.size() - 1 ; i ++)
 		{

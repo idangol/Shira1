@@ -2,6 +2,10 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -11,11 +15,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class TWAcalculator {
 	
-	private PatientsDB cleanDB;
+	private PatientsDB DB;
 	private Logger log;
 	
-	public TWAcalculator(PatientsDB cleabDB, Logger log) {
-		this.cleanDB = cleabDB;
+	public TWAcalculator(PatientsDB DB, Logger log) {
+		this.DB = DB;
 		this.log = log;
 	}
 	
@@ -32,12 +36,13 @@ public class TWAcalculator {
 		// TODO: update column header s.t. times will be shown per patient
 		cell2.setCellValue("TWA");
 		
-		// TODO: sort patient by ID before it before iterating
-		for (Patient patient : cleanDB.getPatients().values())
+		//TODO: patients need to be listed according to their ID
+		
+		for (Patient patient : DB.getPatients().values())
 		{
 			
-			double patientTWA = patient.calcTWA();
-			if (patientTWA == Double.MIN_VALUE)
+			double[] patientTWA = patient.calcTWA();
+			if (patientTWA == null)
 			{
 				System.out.println("\nPatient ID: " + patient.getId() + " problem with TWA calculation");
 			}
@@ -47,7 +52,10 @@ public class TWAcalculator {
 				outputFileRow++;		
 				XSSFRow row = sheet1.createRow(outputFileRow);
 				row.createCell(0).setCellValue(patient.getId());
-				row.createCell(1).setCellValue(patientTWA);
+				for (int j = 0 ; j < patientTWA.length ; j++)
+				{
+					row.createCell(j + 1).setCellValue(patientTWA[j]);
+				}
 			}
 			if (patient.getId() == log.getPatientID())
 			{
