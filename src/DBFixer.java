@@ -66,10 +66,10 @@ public class DBFixer {
 				}
 				
 				// Check for test date, time from transplant should be > requiredNumOfDaysfromTransplant
-				int daysBetweenTransplantAndTest = (int) ChronoUnit.DAYS.between(
+				int daysBetweenTransplantAndFirstTestOfTheInterval = (int) ChronoUnit.DAYS.between(
 									patient.getTransplantDate().get(0), patient.getTestResultsDate().get(testNum));
 				
-				if (daysBetweenTransplantAndTest < requiredNumOfDaysfromTransplant)	 {testNum++; continue;}
+				if (daysBetweenTransplantAndFirstTestOfTheInterval < requiredNumOfDaysfromTransplant)	 {testNum++; continue;}
 				else
 				{
 					//it is the beginning of an interval
@@ -99,7 +99,7 @@ public class DBFixer {
 					}
 					
 					// out of the while loop = tempTestNum is out of interval scope:
-					// If there is 1 more test - insert it for interpolation purpose.
+					// If there is 1 more test - insert it for interpolation purpose (it will be replaced).
 					
 					if (tempTestNum < dataSize)
 					{
@@ -139,9 +139,11 @@ public class DBFixer {
 					{
 						A0_B0 = replacePatientDataEdges(requiredNumOfDaysfromTransplant,tempTestResMat,tempTransDateMat,tempTestResDateMat, 0, 1, 0);
 					}
+					
+					int timeForInterpolation = daysBetweenTransplantAndFirstTestOfTheInterval + requiredNumOfDaysToTheEndOfInterval;
 
 					double[] An_Bn = 
-							replacePatientDataEdges(requiredNumOfDaysToTheEndOfInterval,tempTestResMat,tempTransDateMat,tempTestResDateMat,
+							replacePatientDataEdges(timeForInterpolation,tempTestResMat,tempTransDateMat,tempTestResDateMat,
 									intervalDataSize - 2, intervalDataSize - 1, intervalDataSize - 1);
 					
 					
@@ -185,7 +187,7 @@ public class DBFixer {
 				tempTestResDateMat.get(firstIndex));
 		double x2 = (int) ChronoUnit.DAYS.between(tempTransDateMat.get(0),
 				tempTestResDateMat.get(lastIndex));
-		int requiredTimedValue = requiredNumOfDaysfromTransplant;
+		int requiredTimedValue = requiredNumOfDaysfromTransplant ;
 
 		LinearEquation le = 
 				getCalcultedTestResult(y2, y1, x2, x1, requiredTimedValue);
