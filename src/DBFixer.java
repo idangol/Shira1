@@ -58,11 +58,25 @@ public class DBFixer {
 					tempNumOfTransMat = new ArrayList<Integer>();
 					tempTypeOfTestMat = new ArrayList<String>();
 					tempTestResMat = new ArrayList<Double>();
+					
+					// Insert the last interpolated point as the 1st point of this new Interval
+					
+					// Get previous interval size: 
+					int prevIntervalSize = patient.getTestResultsMatrix().get(interval - 1).size();
+					
+					// Insert last point of the previous interval (interpolated) as this interval 1st point:
+					tempTransDateMat.add(patient.getTransplantDateMatrix().get(interval - 1).get(prevIntervalSize - 1));
+					tempTestResDateMat.add(patient.getTestResultsDateMatrix().get(interval - 1).get(prevIntervalSize - 1));
+					tempNumOfTransMat.add(patient.getNumOfTransplantMatrix().get(interval - 1).get(prevIntervalSize - 1));
+					tempTestResMat.add(patient.getTestResultsMatrix().get(interval - 1).get(prevIntervalSize - 1));
+					tempTypeOfTestMat.add(patient.getTypeOfTestMatrix().get(interval - 1).get(prevIntervalSize - 1));		
 				}
 				
 				// Check for test date, time from transplant should be > requiredNumOfDaysfromTransplant
 				int daysBetweenTransplantAndFirstTestOfTheInterval = (int) ChronoUnit.DAYS.between(
 									patient.getTransplantDate().get(0), patient.getTestResultsDate().get(testNum));
+				
+				boolean interpolate = true;
 				
 				if (daysBetweenTransplantAndFirstTestOfTheInterval < requiredNumOfDaysfromTransplant)	 {testNum++; continue;}
 				else
@@ -72,6 +86,7 @@ public class DBFixer {
 					//inner loop until the time period of the interval > requiredNumOfDaysToTheEndOfInterval and data is not finished
 					int tempTestNum = testNum;
 					int deltaFor1stIntervalMess = 0; // 1st interval includes the 1st test for interpolation, this night effect interval length, should be fixed.
+					
 	
 					while ( (tempTestNum < dataSize) &&
 							((int) ChronoUnit.DAYS.between(patient.getTestResultsDate().get(intervalStartTest),
@@ -102,16 +117,13 @@ public class DBFixer {
 						tempTestResDateMat.add(patient.getTestResultsDate().get(tempTestNum));
 						tempNumOfTransMat.add(patient.getNumOfTransplant().get(tempTestNum));
 						tempTestResMat.add(patient.getTestResults().get(tempTestNum));
-						tempTypeOfTestMat.add(patient.getTypeOfTest().get(tempTestNum));	
+						tempTypeOfTestMat.add(patient.getTypeOfTest().get(tempTestNum));
+						interpolate = true;
 					}
-					// else, previous test was the last Test of this patient - duplicate the last test for same results after interpolation
+					// else, previous test was the last Test of this patient - skip interpolation
 					else
 					{
-						tempTransDateMat.add(patient.getTransplantDate().get(tempTestNum - 1));
-						tempTestResDateMat.add(patient.getTestResultsDate().get(tempTestNum - 1));
-						tempNumOfTransMat.add(patient.getNumOfTransplant().get(tempTestNum - 1));
-						tempTestResMat.add(patient.getTestResults().get(tempTestNum - 1 ));
-						tempTypeOfTestMat.add(patient.getTypeOfTest().get(tempTestNum - 1));
+						interpolate = false;
 					}
 					
 					// update testNum, update newInterval, update intervalStartTest
@@ -125,7 +137,7 @@ public class DBFixer {
 				//---------------------------------------------------------------------------------------------------------------------------------
 				
 				// The 1st test is always inserted, interval will be processed only if there is at least 1 more valid test
-				if (tempTestResMat.size() > 1)
+				if (tempTestResMat.size() > 1 && interpolate) 
 				{
 					// Alternate first and last data for the patient:
 					int intervalDataSize = tempTestResMat.size();

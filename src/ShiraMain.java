@@ -29,13 +29,9 @@ public class ShiraMain {
 		
 		DBFixer dbFixer = new DBFixer(db, log);
 		dbFixer.fixDB(daysFromTransplant, deltaDaysForTWAs);
-		TWAcalculator twAcalculator = new TWAcalculator(db, log);
 		
-		
-		
+		TWAcalculator twAcalculator = new TWAcalculator(db, log,daysFromTransplant, deltaDaysForTWAs);
 		XSSFWorkbook resultWorkbook = new XSSFWorkbook();
-		
-	
 		twAcalculator.calcTWA(resultWorkbook);
 		twAcalculator.writeToFile(resultWorkbook, outputFileName);
 		
