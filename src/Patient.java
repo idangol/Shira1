@@ -9,13 +9,22 @@ public class Patient {
 	private String firstName;
 	private String lastName;
 	private int id;
-	private LocalDate firstTestDateAfterTheTransplant;
-	private double firstTestValueAfterTheTransplant;
+	
+	// The containers for the patient's raw data:
 	private ArrayList<LocalDate> transplantDate;
 	private ArrayList<LocalDate> testResultsDate;
 	private ArrayList<Integer> numOfTransplant;
 	private ArrayList<String> typeOfTest;
 	private ArrayList<Double> testResults;
+	
+	// The matrix for the patients intervals of data:
+	private ArrayList<ArrayList<LocalDate>> transplantDateMatrix;
+	private ArrayList<ArrayList<LocalDate>> testResultsDateMatrix;
+	private ArrayList<ArrayList<Integer>> numOfTransplantMatrix;
+	private ArrayList<ArrayList<String>> typeOfTestMatrix;
+	private ArrayList<ArrayList<Double>> testResultsMatrix;
+	
+	
 	
 	// Constructor:
 	//---------------------------------------------------------
@@ -24,13 +33,19 @@ public class Patient {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.id = id;
-		this.firstTestDateAfterTheTransplant = null;
-		this.firstTestValueAfterTheTransplant = 0.0;
+		//this.firstTestDateAfterTheTransplant = null;
+		//this.firstTestValueAfterTheTransplant = 0.0;
 		this.transplantDate = new ArrayList<LocalDate>();
 		this.testResultsDate = new ArrayList<LocalDate>();
 		this.numOfTransplant = new  ArrayList<Integer>();
 		this.typeOfTest = new ArrayList<String>();
 		this.testResults = new ArrayList<Double>();
+		
+		this.transplantDateMatrix = new ArrayList<ArrayList<LocalDate>>();
+		this.testResultsDateMatrix = new ArrayList<ArrayList<LocalDate>>();
+		this.numOfTransplantMatrix = new ArrayList<ArrayList<Integer>>();
+		this.typeOfTestMatrix = new ArrayList<ArrayList<String>>();
+		this.testResultsMatrix = new ArrayList<ArrayList<Double>>();
 	}
 	
 	// Getters:
@@ -64,23 +79,49 @@ public class Patient {
 		return lastName;
 	}
 	
-	public LocalDate getFirstTestDateAfterTheTransplant() {
-		return firstTestDateAfterTheTransplant;
+	public ArrayList<ArrayList<Double>> getTestResultsMatrix() {
+		return testResultsMatrix;
 	}
-
-	public double getFirstTestValueAfterTheTransplant() {
-		return firstTestValueAfterTheTransplant;
+	
+	public ArrayList<ArrayList<LocalDate>> getTestResultsDateMatrix() {
+		return testResultsDateMatrix;
 	}
+	
+	public ArrayList<ArrayList<String>> getTypeOfTestMatrix() {
+		return typeOfTestMatrix;
+	}
+	
+	public ArrayList<ArrayList<LocalDate>> getTransplantDateMatrix() {
+		return transplantDateMatrix;
+	}
+	
+	
 	
 	// Setters:
 	//---------------------------------------------------------
 
-	public void setFirstTestDateAfterTheTransplant(LocalDate firstTestDateAfterTheTransplant) {
-		this.firstTestDateAfterTheTransplant = firstTestDateAfterTheTransplant;
+	public void setTransplantDateMatrix(ArrayList<ArrayList<LocalDate>> transplantDateMatrix) {
+		this.transplantDateMatrix = transplantDateMatrix;
 	}
 
-	public void setFirstTestValueAfterTheTransplant(double firstTestValueAfterTheTransplant) {
-		this.firstTestValueAfterTheTransplant = firstTestValueAfterTheTransplant;
+	public void setTestResultsDateMatrix(ArrayList<ArrayList<LocalDate>> testResultsDateMatrix) {
+		this.testResultsDateMatrix = testResultsDateMatrix;
+	}
+
+	public ArrayList<ArrayList<Integer>> getNumOfTransplantMatrix() {
+		return numOfTransplantMatrix;
+	}
+
+	public void setNumOfTransplantMatrix(ArrayList<ArrayList<Integer>> numOfTransplantMatrix) {
+		this.numOfTransplantMatrix = numOfTransplantMatrix;
+	}
+
+	public void setTypeOfTestMatrix(ArrayList<ArrayList<String>> typeOfTestMatrix) {
+		this.typeOfTestMatrix = typeOfTestMatrix;
+	}
+
+	public void setTestResultsMatrix(ArrayList<ArrayList<Double>> testResultsMatrix) {
+		this.testResultsMatrix = testResultsMatrix;
 	}
 
 	// Update the data lists:
@@ -149,19 +190,34 @@ public class Patient {
 		}
 	}
 
-	public double calcTWA() {
+	public double[] calcTWA() {
+			
+		int numOfcolumnsForThepatient =  this.getTestResultsMatrix().size();
 		
-		double result = 0.0;
-		int days = 0;
-		// 1. Alert if test dates is unsorted:
-		for(int i = 0 ; i < testResultsDate.size() - 1 ; i ++ )
+		double[] results = new double[numOfcolumnsForThepatient];
+		
+		for (int i = 0 ; i < numOfcolumnsForThepatient ; i++)
 		{
-			if (testResultsDate.get(i+1).isBefore(testResultsDate.get(i)))
+			double TWAi = calcTWAForInterval(this.getTestResultsDateMatrix().get(i), this.getTestResultsMatrix().get(i));
+			results[i] = TWAi;		
+		}
+	    return results;
+	}
+
+	private double calcTWAForInterval(ArrayList<LocalDate> testResultsDate, ArrayList<Double>testResults) {
+		
+		// 1. Alert if test dates is unsorted:	
+		double result = 0.0;
+		for(int k = 0 ; k < testResultsDate.size() - 1 ; k ++ )
+		{
+			if (testResultsDate.get(k+1).isBefore(testResultsDate.get(k)))
 			{
-				System.out.println("Problem with patient with ID: " + id + " tests dates are out of order: see " + i + " and " + (i+1));
-				return  Double.MIN_VALUE;
+				System.out.println("Problem with patient with ID: " + id + " tests dates are out of order: see " + k + " and " + (k+1));
+				return  -1.0;
 			}
 		}
+		
+		int days = 0;
 		 
 		for (int i = 0 ; i < testResultsDate.size() - 1 ; i ++)
 		{
@@ -196,6 +252,16 @@ public class Patient {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public void updateInerval(ArrayList<LocalDate> tempTransDateMat, ArrayList<LocalDate> tempTestResDateMat,
+			ArrayList<Integer> tempNumOfTransMat, ArrayList<Double> tempTestResMat, ArrayList<String> tempTypeOfTestMat,
+			int interval) {
+		this.transplantDateMatrix.add(interval,tempTransDateMat);
+		this.testResultsDateMatrix.add(interval,tempTestResDateMat);
+		this.numOfTransplantMatrix.add(interval,tempNumOfTransMat);
+		this.testResultsMatrix.add(interval,tempTestResMat);
+		this.typeOfTestMatrix.add(interval,tempTypeOfTestMat);
 	}
 	
 	
